@@ -81,16 +81,16 @@ const GettextWebpackPlugin = require('gettext-webpack-plugin');
 const languages = ['en', 'es'];
 
 module.exports = languages.map(language => {
-	return {
-		name: language,
+    return {
+        name: language,
         entry: './src/index.js',
-		output: {
-			filename: language + '.[name].js'
-		},
+        output: {
+            filename: language + '.[name].js'
+        },
         plugins: [
-                new GettextWebpackPlugin({ translation: path.join(__dirname, 'i18n', language + '.po') })
+            new GettextWebpackPlugin({ translation: path.join(__dirname, 'i18n', language + '.po') })
         ]
-	};
+    };
 });
 ```
 
