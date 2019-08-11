@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="${LANGUAGE}">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="shortcut icon" href="${require('./favicon.png')}">
+    <title>${__('Hello gettext-webpack-plugin!')}</title>
+    <style>
+        .loading-backdrop,
+        .loading-container {
+            position: fixed;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            top: 0;
+            z-index: -100000;
+            opacity: 0;
+        }
+
+        .loading-backdrop {
+            background-color: black;
+        }
+
+        .loading-container {
+            top: 40%;
+        }
+
+        .loading .loading-container {
+            opacity: 1;
+            transition: opacity 3s linear 1s;
+            z-index: 100000;
+        }
+
+        .loading .loading-backdrop {
+            opacity: 0.2;
+            transition: opacity 1s linear 1s;
+            z-index: 100000;
+        }
+
+        .loading-spinner {
+            width: 40px;
+            height: 40px;
+            margin: 100px auto;
+            background-color: #333;
+
+            border-radius: 100%;
+            animation: loading-sk-scaleout 1.0s infinite ease-in-out;
+        }
+
+        @keyframes loading-sk-scaleout {
+            0% {
+                transform: scale(0);
+            }
+
+            100% {
+                transform: scale(1.0);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body class="loading">
+    <div class="loading-container">
+        <div class="loading-spinner"></div>
+    </div>
+    <div class="loading-backdrop"></div>
+    <div id="app"></div>
+    <noscript>
+        ${__('You need to enable JavaScript to run this app.')}
+    </noscript>
+</body>
+
+</html>

@@ -1,0 +1,25 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=UTF-8\n"
+
+#: src/index.html:8
+msgid "Hello gettext-webpack-plugin!"
+msgstr ""
+
+#: src/index.js:9
+msgid "Introduce your age:"
+msgstr ""
+
+#: src/index.js:14
+msgid "Invalid age."
+msgstr ""
+
+#: src/index.js:16
+msgid "You are {age, number} year old."
+msgid_plural "You are {age, number} years old."
+msgstr[0] ""
+msgstr[1] ""
+
+#: src/index.html:71
+msgid "You need to enable JavaScript to run this app."
+msgstr ""

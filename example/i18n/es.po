@@ -1,0 +1,36 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: 2019-08-10 19:06+0200\n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: src/index.html:8
+msgid "Hello gettext-webpack-plugin!"
+msgstr "¡Hola gettext-webpack-plugin!"
+
+#: src/index.js:9
+msgid "Introduce your age:"
+msgstr "Introduce tu edad:"
+
+#: src/index.js:14
+msgid "Invalid age."
+msgstr "Edad inválida."
+
+#: src/index.js:16
+msgid "You are {age, number} year old."
+msgid_plural "You are {age, number} years old."
+msgstr[0] "Tienes {age, number} año."
+msgstr[1] "Tienes {age, number} años."
+
+#: src/index.html:71
+msgid "You need to enable JavaScript to run this app."
+msgstr "Necesitas tener JavaScript habilitado para ejecutar esta aplicación."

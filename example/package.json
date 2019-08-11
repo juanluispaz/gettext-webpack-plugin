@@ -1,0 +1,31 @@
+{
+    "name": "gettext-webpack-plugin-example",
+    "version": "1.0.0",
+    "description": "Example of use gettext-webpack-plugin",
+    "private": true,
+    "author": {
+        "name": "Juan Luis Paz Rojas",
+        "url": "http://github.com/juanluispaz"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/juanluispaz/gettext-webpack-plugin/issues"
+    },
+    "homepage": "https://github.com/juanluispaz/gettext-webpack-plugin",
+    "scripts": {
+        "build": "webpack --config webpack.config.js",
+        "i18n:extract": "node i18n-extract.js"
+    },
+    "dependencies": {
+        "file-loader": "^4.2.0",
+        "gettext-extractor": "^3.5.1",
+        "gettext-parser": "^4.0.1",
+        "gettext-webpack-plugin": "^1.0.0",
+        "html-loader": "^0.5.5",
+        "html-webpack-plugin": "^3.2.0",
+        "intl-messageformat": "^6.1.2",
+        "url-loader": "^2.1.0",
+        "webpack": "^4.39.1",
+        "webpack-cli": "^3.3.6"
+    }
+}
