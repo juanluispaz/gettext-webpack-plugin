@@ -1,6 +1,6 @@
 const ConstDependency = require('webpack/lib/dependencies/ConstDependency.js');
 const NullFactory = require('webpack/lib/NullFactory.js');
-const ParserHelpers = require('webpack/lib/ParserHelpers.js');
+const ParserHelpers = require('webpack/lib/javascript/JavascriptParserHelpers.js');
 const gettextParser = require('gettext-parser');
 const fs = require('fs');
 
