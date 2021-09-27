@@ -1,31 +1,31 @@
 {
-  "name": "gettext-webpack-plugin",
-  "version": "1.0.0",
-  "description": "Embed localization into your webpack's bundle using gettext",
-  "author": {
-    "name": "Juan Luis Paz Rojas",
-    "url": "http://github.com/juanluispaz"
-  },
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/juanluispaz/gettext-webpack-plugin/issues"
-  },
-  "homepage": "https://github.com/juanluispaz/gettext-webpack-plugin",
-  "main": "src/index.js",
-  "keywords": [
-    "webpack",
-    "gettext",
-    "i18n",
-    "internationalization",
-    "l10n",
-    "localization",
-    "translate",
-    "translation"
-  ],
-  "peerDependencies": {
-    "webpack": "^4.0.0"
-  },
-  "dependencies": {
-    "gettext-parser": "^3.1.0"
-  }
+    "name": "gettext-webpack-plugin",
+    "version": "1.0.0",
+    "description": "Embed localization into your webpack's bundle using gettext",
+    "author": {
+        "name": "Juan Luis Paz Rojas",
+        "url": "http://github.com/juanluispaz"
+    },
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/juanluispaz/gettext-webpack-plugin/issues"
+    },
+    "homepage": "https://github.com/juanluispaz/gettext-webpack-plugin",
+    "main": "src/index.js",
+    "keywords": [
+        "webpack",
+        "gettext",
+        "i18n",
+        "internationalization",
+        "l10n",
+        "localization",
+        "translate",
+        "translation"
+    ],
+    "peerDependencies": {
+        "webpack": "^5.0.0"
+    },
+    "dependencies": {
+        "gettext-parser": "^4.0.0"
+    }
 }
