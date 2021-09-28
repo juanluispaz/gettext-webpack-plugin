@@ -24,7 +24,7 @@ if (poFiles.length <= 0) {
     process.exit(-1);
 }
 
-module.exports = poFiles.map(function (poFile) {
+module.exports = poFiles.map(function(poFile) {
     const language = path.parse(poFile).name.replace('_', '-');
     return {
         name: language,
@@ -32,15 +32,25 @@ module.exports = poFiles.map(function (poFile) {
         entry: './src/index.js',
         module: {
             rules: [
-                { test: /\.(png|svg|jpg|jpeg|gif)$/, use: { loader: 'url-loader', options: { limit: 10000 } } },
-                { test: /\.(woff|woff2|eot|ttf|otf)$/, use: 'file-loader' }
+                { test: /\.(png|svg|jpg|jpeg|gif)$/, type: 'asset' },
+                { test: /\.(woff|woff2|eot|ttf|otf)$/, type: 'asset/resource' }
             ]
         },
         plugins: [
             new GettextWebpackPlugin({ translation: poFile }),
             new HtmlWebpackPlugin({
                 filename: language + '.index.html',
-                template: '!!html-loader?minimize&interpolate&conservativeCollapse=false!src/index.html'
+                template: 'src/index.html',
+                minify: {
+                    collapseWhitespace: true,
+                    keepClosingSlash: true,
+                    removeComments: true,
+                    removeRedundantAttributes: true,
+                    removeScriptTypeAttributes: true,
+                    removeStyleLinkTypeAttributes: true,
+                    useShortDoctype: true,
+                    minifyCSS: true
+                }
             }),
             new webpack.DefinePlugin({
                 'LANGUAGE': JSON.stringify(language)

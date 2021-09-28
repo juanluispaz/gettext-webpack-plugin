@@ -82,31 +82,31 @@ class GettextWebpackPlugin {
         this.pgettextFunctionName = options.pgettextFunctionName;
         this.npgettextFunctionName = options.npgettextFunctionName;
 
-        if (!this.gettextFunctionName && !this.ngettextFunctionName && !this.pgettextFunctionName  && !this.npgettextFunctionName) {
+        if (!this.gettextFunctionName && !this.ngettextFunctionName && !this.pgettextFunctionName && !this.npgettextFunctionName) {
             this.gettextFunctionNameOverloadedN = '__';
             this.pgettextFunctionNameOverloadedN = '_c'
         } else {
             if (this.gettextFunctionName && this.gettextFunctionName === this.ngettextFunctionName) {
                 this.gettextFunctionNameOverloadedN = this.gettextFunctionName;
-                this.gettextFunctionName  = undefined;
+                this.gettextFunctionName = undefined;
                 this.ngettextFunctionName = undefined;
             }
 
             if (this.pgettextFunctionName && this.pgettextFunctionName === this.npgettextFunctionName) {
                 this.pgettextFunctionNameOverloadedN = this.pgettextFunctionName;
-                this.pgettextFunctionName  = undefined;
+                this.pgettextFunctionName = undefined;
                 this.npgettextFunctionName = undefined;
             }
 
             if (this.gettextFunctionName && this.gettextFunctionName === this.pgettextFunctionName) {
                 this.gettextFunctionNameOverloadedP = this.gettextFunctionName;
-                this.gettextFunctionName  = undefined;
+                this.gettextFunctionName = undefined;
                 this.pgettextFunctionName = undefined;
             }
 
             if (this.ngettextFunctionName && this.ngettextFunctionName === this.npgettextFunctionName) {
                 this.ngettextFunctionNameOverloadedP = this.ngettextFunctionName;
-                this.ngettextFunctionName  = undefined;
+                this.ngettextFunctionName = undefined;
                 this.npgettextFunctionName = undefined;
             }
 
@@ -168,12 +168,12 @@ class GettextWebpackPlugin {
 
 class I18NGettextError extends Error {
     constructor(module, message) {
-      super();
-  
-      Error.captureStackTrace(this, I18NGettextError);
-      this.name = 'I18NGettextError';
-      this.module = module;
-      this.message = message;
+        super();
+
+        Error.captureStackTrace(this, I18NGettextError);
+        this.name = 'I18NGettextError';
+        this.module = module;
+        this.message = message;
     }
 }
 
