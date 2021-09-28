@@ -1,6 +1,6 @@
 {
     "name": "gettext-webpack-plugin-example",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Example of use gettext-webpack-plugin",
     "private": true,
     "author": {
@@ -19,7 +19,7 @@
     "dependencies": {
         "gettext-extractor": "^3.5.3",
         "gettext-parser": "^4.0.4",
-        "gettext-webpack-plugin": "^1.0.0",
+        "gettext-webpack-plugin": "^2.0.0",
         "html-webpack-plugin": "^5.3.2",
         "intl-messageformat": "^9.9.2",
         "webpack": "^5.54.0",

@@ -1,6 +1,6 @@
 {
     "name": "gettext-webpack-plugin",
-    "version": "1.0.0",
+    "version": "2.0.0",
     "description": "Embed localization into your webpack's bundle using gettext",
     "author": {
         "name": "Juan Luis Paz Rojas",
