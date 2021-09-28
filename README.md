@@ -13,6 +13,9 @@ Install with [npm](https://www.npmjs.com/):
 $ npm install --save gettext-webpack-plugin
 ```
 
+For webpack 4 use the version 1.0.0 of this package.
+For webpack 5 use the version 2.0.0 of this package.
+
 ## Differences with gettext
 
 In some gettext implementations you can get the translation and format the text in one function. Example:
