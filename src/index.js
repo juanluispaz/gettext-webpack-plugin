@@ -1,6 +1,7 @@
-const ConstDependency = require('webpack/lib/dependencies/ConstDependency.js');
-const NullFactory = require('webpack/lib/NullFactory.js');
-const ParserHelpers = require('webpack/lib/javascript/JavascriptParserHelpers.js');
+const ConstDependency = require('webpack/lib/dependencies/ConstDependency');
+const NullFactory = require('webpack/lib/NullFactory');
+const ParserHelpers = require('webpack/lib/javascript/JavascriptParserHelpers');
+const WebpackError = require('webpack/lib/WebpackError');
 const gettextParser = require('gettext-parser');
 const fs = require('fs');
 
@@ -194,29 +195,27 @@ class GettextWebpackPlugin {
     }
 }
 
-class I18NGettextError extends Error {
-    constructor(module, message) {
-        super();
-
-        Error.captureStackTrace(this, I18NGettextError);
+class I18NGettextError extends WebpackError {
+    constructor(module, message, loc) {
+        super(message);
         this.name = 'I18NGettextError';
         this.module = module;
-        this.message = message;
+        this.loc = loc;
     }
 }
 
-function reportError(parser, reportInvalidAs, message) {
+function reportError(parser, reportInvalidAs, message, loc) {
     if (reportInvalidAs === 'error') {
-        parser.state.module.errors.push(new I18NGettextError(parser.state.module, message));
+        parser.state.module.addError(new I18NGettextError(parser.state.module, message, loc));
     } else if (reportInvalidAs === 'warning') {
-        parser.state.module.warnings.push(new I18NGettextError(parser.state.module, message));
+        parser.state.module.addError(new I18NGettextError(parser.state.module, message, loc));
     }
 }
 
 function pluralFactory(parser, pluralFunction, name, reportInvalidAs) {
     return (expr) => {
         if (expr.arguments.length != 0) {
-            reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 0 arguments');
+            reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 0 arguments', expr.loc);
             return false;
         }
         return ParserHelpers.toConstantDependency(parser, '(' + pluralFunction + ')')(expr);
@@ -230,17 +229,17 @@ function gettext(parser, translate, name, reportInvalidAs) {
             case 1:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 non-empty string literal as argument', expr.loc);
                 return false;
         }
 
@@ -257,27 +256,27 @@ function ngettext(parser, translate, name, reportInvalidAs) {
             case 2:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[1]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -294,27 +293,27 @@ function pgettext(parser, translate, name, reportInvalidAs) {
             case 2:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -332,37 +331,37 @@ function npgettext(parser, translate, name, reportInvalidAs) {
             case 3:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[2]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 3 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -379,39 +378,39 @@ function gettextOverloadedN(parser, translate, name, reportInvalidAs) {
             case 2:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[1]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             case 1:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -429,59 +428,59 @@ function pgettextOverloadedN(parser, translate, name, reportInvalidAs) {
             case 3:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[2]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             case 2:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -498,39 +497,39 @@ function gettextOverloadedP(parser, translate, name, reportInvalidAs) {
             case 2:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             case 1:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 1 or 2 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -548,59 +547,59 @@ function ngettextOverloadedP(parser, translate, name, reportInvalidAs) {
             case 3:
                 context = parser.evaluateExpression(expr.arguments[0]);
                 if (!context.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 context = context.string;
                 if (!context) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = parser.evaluateExpression(expr.arguments[1]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[2]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             case 2:
                 singular = parser.evaluateExpression(expr.arguments[0]);
                 if (!singular.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 singular = singular.string;
                 if (!singular) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = parser.evaluateExpression(expr.arguments[1]);
                 if (!plural.isString()) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 plural = plural.string;
                 if (!plural) {
-                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                    reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                     return false;
                 }
                 break;
             default:
-                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument');
+                reportError(parser, reportInvalidAs, 'The "' + name + '" function must receive 2 or 3 non-empty string literals as argument', expr.loc);
                 return false;
         }
 
@@ -692,7 +691,7 @@ function buildTranslateFunction(translation, name, includeFuzzy, setPluralFuncti
             }
         }
     } else {
-        throw new Error('Invalid option "' + name + '". Unable to handle the valua as a source of translations');
+        throw new Error('Invalid option "' + name + '". Unable to handle the value as a source of translations');
     }
 }
 
