@@ -4,6 +4,13 @@ const fs = require('fs');
 const process = require('process');
 const path = require('path');
 const webpack = require('webpack');
+const pseudolocale = require('pseudolocale');
+
+pseudolocale.option.startDelimiter = '{';
+pseudolocale.option.endDelimiter = '}';
+pseudolocale.option.prepend = ''
+pseudolocale.option.append = ''
+const pseudolocalize = pseudolocale.str
 
 if (!fs.existsSync('i18n')) {
     console.error('No .po files found in the folder i18n');
@@ -25,9 +32,14 @@ if (poFiles.length <= 0) {
 }
 
 module.exports = poFiles.map(function(poFile) {
-    const language = path.parse(poFile).name.replace('_', '-');
+    const localeName = path.parse(poFile).name.replace('_', '-');
+    let language = localeName;
+    let isPseudo = language.startsWith('pseudo-');
+    if (isPseudo) {
+        language = language.substring('pseudo-'.length)
+    }
     return {
-        name: language,
+        name: localeName,
         mode: 'production',
         entry: './src/index.js',
         module: {
@@ -37,9 +49,12 @@ module.exports = poFiles.map(function(poFile) {
             ]
         },
         plugins: [
-            new GettextWebpackPlugin({ translation: poFile }),
+            new GettextWebpackPlugin({
+                translation: poFile,
+                transformText: isPseudo ? pseudolocalize : undefined
+            }),
             new HtmlWebpackPlugin({
-                filename: language + '.index.html',
+                filename: localeName + '.index.html',
                 template: 'src/index.html',
                 minify: {
                     collapseWhitespace: true,
@@ -57,7 +72,7 @@ module.exports = poFiles.map(function(poFile) {
             })
         ],
         output: {
-            filename: language + '.[name].[contenthash].js'
+            filename: localeName + '.[name].[contenthash].js'
         }
     };
 });

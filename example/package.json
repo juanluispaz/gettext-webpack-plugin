@@ -22,6 +22,7 @@
         "gettext-webpack-plugin": "^2.0.0",
         "html-webpack-plugin": "^5.3.2",
         "intl-messageformat": "^9.9.2",
+        "pseudolocale": "^1.2.0",
         "webpack": "^5.54.0",
         "webpack-cli": "^4.8.0"
     }

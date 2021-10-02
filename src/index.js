@@ -28,7 +28,9 @@ class GettextWebpackPlugin {
      *   function(context: string, text: string): string. Optional.
      * - npgettextFunctionName: string - Npgettext function name. The signature of this function will be: 
      *   function(context: string, singular: string, plural: string): string[]. Optional.
-     * - transformToJS: function(string | string[]): string - Function that transforms the translation result in 
+     * - transformText: function(text: string): string - Funtion that allows to transform the transaled text; allowing
+     *   by example implement a pseudolocalization by transforming the text. Optional.
+     * - transformToJS: function(translation: string | string[]): string - Function that transforms the translation result in 
      *   JavaScript. By default JSON.stringify will be used. This function can change gettext results that can be 
      *   different to string or string[]. This function is usefull, by example, if you whant to compile the 
      *   translations into a function that handle the interpolations. Note: the result of this function must be
@@ -53,9 +55,35 @@ class GettextWebpackPlugin {
         }
 
         let transformToJS = options.transformToJS;
+        let transformText = options.transformText;
         if (!transformToJS) {
+            if (transformText) {
+                transformToJS = (translation) => {
+                    if (Array.isArray(translation)) {
+                        translation = translation.map((text) => {
+                            return transformText(text);
+                        });
+                    } else {
+                        translation = transformText(translation);
+                    }
+                    return JSON.stringify(translation);
+                }
+            } else {
+                transformToJS = (translation) => {
+                    return JSON.stringify(translation);
+                }
+            }
+        } else if (transformText) {
+            const initialTransformToJS = transformToJS;
             transformToJS = (translation) => {
-                return JSON.stringify(translation);
+                if (Array.isArray(translation)) {
+                    translation = translation.map((text) => {
+                        return transformText(text);
+                    });
+                } else {
+                    translation = transformText(translation);
+                }
+                return initialTransformToJS(translation);
             }
         }
 

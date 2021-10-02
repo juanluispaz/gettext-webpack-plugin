@@ -119,6 +119,10 @@ There are several configurations that you can specify to `gettext-webpack-plugin
 
 **Note**: You can overload a function according to the number of parameters.
 
+### Processing the translated text
+
+- ``transformText``: (function, optional, default `undefined`) Function with signature `(text: string) => string` that allows to transform the transaled text. Providing this function you can, by example, implement a [pseudolocalization](https://en.wikipedia.org/wiki/Pseudolocalization) by transforming the text. In the provided example the [pseudolocale](https://www.npmjs.com/package/pseudolocale) to create the pseodolocalized texts.
+
 ### Other configurations
 
 - **`includeFuzzy`**: (boolean, optional, default `false`) Include the fuzzy translations. Default: false, that means, the translation marked as 'Need works' will be ignored during the process.
