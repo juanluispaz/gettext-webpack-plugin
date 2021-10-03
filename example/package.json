@@ -1,6 +1,6 @@
 {
     "name": "gettext-webpack-plugin-example",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Example of use gettext-webpack-plugin",
     "private": true,
     "author": {
